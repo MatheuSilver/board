@@ -1,5 +1,7 @@
 package br.com.dio.persistence.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,7 +17,11 @@ import static br.com.dio.persistence.entity.BoardColumnKindEnum.INITIAL;
 public class BoardEntity {
 
     private Long id;
+
+    @NotBlank(message = "O nome do board não pode ser vazio")
+    @Size(max = 100, message = "O nome do board deve ter no máximo 100 caracteres")
     private String name;
+    
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<BoardColumnEntity> boardColumns = new ArrayList<>();

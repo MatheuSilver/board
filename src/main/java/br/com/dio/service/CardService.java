@@ -8,10 +8,16 @@ import br.com.dio.persistence.dao.BlockDAO;
 import br.com.dio.persistence.dao.CardDAO;
 import br.com.dio.persistence.entity.CardEntity;
 import lombok.AllArgsConstructor;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.ConstraintViolation;
+
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import static br.com.dio.persistence.entity.BoardColumnKindEnum.CANCEL;
 import static br.com.dio.persistence.entity.BoardColumnKindEnum.FINAL;
@@ -21,6 +27,24 @@ import static br.com.dio.persistence.entity.BoardColumnKindEnum.FINAL;
 public class CardService {
 
     private final Connection connection;
+    private final Validator validator;
+
+    public CardService() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        this.connection = null;
+        validator = factory.getValidator();
+    }
+
+    public void save(CardEntity card) {
+        Set<ConstraintViolation<CardEntity>> violations = validator.validate(card);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<CardEntity> violation : violations) {
+                System.out.println(violation.getMessage());
+            }
+            throw new IllegalArgumentException("Dados inválidos para Card");
+        }
+        // ...persistência...
+    }
 
     public CardEntity create(final CardEntity entity) throws SQLException {
         try {

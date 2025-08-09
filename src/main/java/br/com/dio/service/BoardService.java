@@ -1,5 +1,6 @@
 package br.com.dio.service;
 
+import br.com.dio.exception.ApplicationException;
 import br.com.dio.persistence.dao.BoardColumnDAO;
 import br.com.dio.persistence.dao.BoardDAO;
 import br.com.dio.persistence.entity.BoardEntity;
@@ -26,9 +27,9 @@ public class BoardService {
                 boardColumnDAO.insert(column);
             }
             connection.commit();
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
             connection.rollback();
-            throw e;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
         return entity;
     }
@@ -42,9 +43,9 @@ public class BoardService {
             dao.delete(id);
             connection.commit();
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException ex) {
             connection.rollback();
-            throw e;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 

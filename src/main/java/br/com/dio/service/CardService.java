@@ -1,6 +1,7 @@
 package br.com.dio.service;
 
 import br.com.dio.dto.BoardColumnInfoDTO;
+import br.com.dio.exception.ApplicationException;
 import br.com.dio.exception.CardBlockedException;
 import br.com.dio.exception.CardFinishedException;
 import br.com.dio.exception.EntityNotFoundException;
@@ -52,9 +53,9 @@ public class CardService {
             dao.insert(entity);
             connection.commit();
             return entity;
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             connection.rollback();
-            throw ex;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 
@@ -81,9 +82,9 @@ public class CardService {
                     .findFirst().orElseThrow(() -> new IllegalStateException("O card está cancelado"));
             dao.moveToColumn(nextColumn.id(), cardId);
             connection.commit();
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             connection.rollback();
-            throw ex;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 
@@ -111,9 +112,9 @@ public class CardService {
                     .findFirst().orElseThrow(() -> new IllegalStateException("O card está cancelado"));
             dao.moveToColumn(cancelColumnId, cardId);
             connection.commit();
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             connection.rollback();
-            throw ex;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 
@@ -140,9 +141,9 @@ public class CardService {
             var blockDAO = new BlockDAO(connection);
             blockDAO.block(reason, id);
             connection.commit();
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             connection.rollback();
-            throw ex;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 
@@ -160,9 +161,9 @@ public class CardService {
             var blockDAO = new BlockDAO(connection);
             blockDAO.unblock(reason, id);
             connection.commit();
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             connection.rollback();
-            throw ex;
+            throw new ApplicationException("Erro ao acessar o banco de dados.", ex);
         }
     }
 
